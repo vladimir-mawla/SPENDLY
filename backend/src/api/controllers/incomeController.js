@@ -52,3 +52,25 @@ const updateIncome = asyncHandler(async (req, res) => {
 
   res.status(200).json(updatedIncome)
 })
+
+// @desc    Delete income
+// @route   DELETE /api/incomes/:id
+// @access  Private
+const deleteIncome = asyncHandler(async (req, res) => {
+  const income = await Income.findById(req.params.id)
+
+  if (!income) {
+    res.status(400)
+    throw new Error("Income not found")
+  }
+
+  // Make sure the logged in user matches the income user
+  if (income.user.toString() !== req.user.id) {
+    res.status(401)
+    throw new Error("User not authorized")
+  }
+
+  await income.remove()
+
+  res.status(200).json({ id: req.params.id })
+})
