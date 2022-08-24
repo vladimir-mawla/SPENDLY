@@ -92,7 +92,7 @@ const loginUser = asyncHandler(async (req, res) => {
   // Check for user email
   const user = await User.findOne(
     { email },
-    { orgName: 1, password: 1, firstName: 1, lastName: 1, email: 1 }
+    { password: 1, first_name: 1, last_name: 1, email: 1 }
   )
   if (!user) {
     res.status(400)
@@ -101,13 +101,18 @@ const loginUser = asyncHandler(async (req, res) => {
 
   // Check password and respond
   if (await bcrypt.compare(password, user.password)) {
-    res.status(201).json({
-      orgName: user.orgName,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      accessToken: generateToken(user._id),
-    })
+    const token = jwt.sign(
+      { user_id: user._id, email },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "2h",
+      }
+    );
+    // save user token
+    user.token = token;
+  
+    // return new user
+    res.status(201).json(user);
   } else {
     res.status(400)
     throw new Error("Invalid Credentials")
@@ -126,8 +131,8 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   const {
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     email,
     websiteAddress,
     country,
@@ -147,8 +152,8 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   // validate and update inputs
-  user.firstName = firstName ? firstName : user.firstName
-  user.lastName = lastName ? lastName : user.lastName
+  user.first_name = first_name ? first_name : user.first_name
+  user.last_name = last_name ? last_name : user.last_name
   user.email = email ? email : user.email
   user.websiteAddress = websiteAddress
   user.country = country
@@ -219,7 +224,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   user.save()
 
   // Send success email
-  const userName = `${user.firstName} ${user.lastName}`
+  const userName = `${user.first_name} ${user.last_name}`
   const link = `${process.env.CLIENT_URL}/login`
   sendEmail(
     user.email,
@@ -275,7 +280,7 @@ const requestResetPassword = asyncHandler(async (req, res) => {
 
   // send email with the reset link
   const link = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`
-  const userName = `${user.firstName} ${user.lastName}`
+  const userName = `${user.first_name} ${user.last_name}`
   sendEmail(
     user.email,
     "Password Reset Request",
