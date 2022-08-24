@@ -27,3 +27,29 @@ const setExpense = asyncHandler(async (req, res) => {
 
   res.status(200).json(expense)
 })
+
+// @desc    Update expense
+// @route   PUT /api/expenses/:id
+// @access  Private
+const updateExpense = asyncHandler(async (req, res) => {
+  const expense = await Expense.findById(req.params.id)
+
+  if (!expense) {
+    res.status(400)
+    throw new Error("Expense not found")
+  }
+
+  // Make sure the logged in user matches the expense user
+  if (expense.user.toString() !== req.user.id) {
+    res.status(401)
+    throw new Error("User not authorized")
+  }
+
+  expense.type = req.body.type
+  expense.amount = req.body.amount
+  expense.date = req.body.date
+
+  const updatedExpense = await expense.save()
+
+  res.status(200).json(updatedExpense)
+})
