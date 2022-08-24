@@ -74,3 +74,27 @@ const deleteIncome = asyncHandler(async (req, res) => {
 
   res.status(200).json({ id: req.params.id })
 })
+
+// @desc    Import incomes CSV
+// @route   POST /api/incomes/import
+// @access  Private
+const importIncome = asyncHandler(async (req, res) => {
+  // read uploaded csv
+  let source = await csvtojson().fromFile(req.file.path)
+
+  // validate data and append values
+  let validated = validateImport(source, req.user.id)
+
+  // insert all records
+  const imports = await Income.insertMany(validated.data)
+
+  // update user stats since middleware won't work on .insertMany
+  req.user.transactions += imports.length
+  req.user.totalIncome += validated.totalAmount
+  req.user.save()
+
+  // delete the uploaded csv from the static folder
+  await fs.promises.unlink(req.file.path)
+
+  res.status(200).json({ file: req.file, incomes: imports })
+})
