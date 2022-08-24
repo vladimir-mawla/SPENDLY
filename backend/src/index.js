@@ -1,10 +1,17 @@
-const http = require("http");
-const app = require("./app");
-const server = http.createServer(app);
+const express = require('express')
+require("./config/database").connect();
+
+const app = express();
+
+app.use(express.urlencoded({ extended: true} ));
 
 const port = process.env.PORT || 5000;
 
+
+app.use('/api', require('./api/routes'))
+
+
 // server listening 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

@@ -1,12 +1,25 @@
-// importing user context
-const User = require("../models/userModel");
+const express = require("express")
+const router = express.Router()
 
-// Register
-app.post("/register", (req, res) => {
-// our register logic goes here...
-});
+const {
+  registerUser,
+  loginUser,
+  updateUser,
+  resetPassword,
+  getCurrentUser,
+  requestResetPassword,
+} = require("../controllers/userController")
 
-// Login
-app.post("/login", (req, res) => {
-// our login logic goes here
-});
+const { protect } = require("../middlewares/authMiddleware")
+
+// Routes on /api/users/
+router
+  .route("/")
+  .post(registerUser)
+
+router.post("/register", registerUser)
+router.post("/login", loginUser)
+router.post("/reset", resetPassword)
+router.post("/request.reset", requestResetPassword)
+
+module.exports = router
