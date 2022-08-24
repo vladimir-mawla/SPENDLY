@@ -120,3 +120,12 @@ const exportIncome = asyncHandler(async (req, res) => {
 
   res.status(200).attachment(filename).send(csv)
 })
+
+module.exports = {
+  getIncomes,
+  setIncome,
+  updateIncome,
+  deleteIncome,
+  importIncome,
+  exportIncome,
+}
