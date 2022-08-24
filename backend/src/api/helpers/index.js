@@ -6,18 +6,18 @@ const padToTwoDigits = (num) => {
   
 const validateImport = (source, id) => {
   let data = []
-  let totalAmount = 0
-  const errMsg = {
+  let total = 0
+  const err = {
     message: "CSV data are not valid",
   }
 
   source.forEach((row) => {
     if (!row.Type || !row.Amount || !row.Date) {
-      console.log(errMsg)
+      console.log(err)
     }
 
     if (parseInt(row.Amount) <= 0) {
-      console.log(errMsg)
+      console.log(err)
     }
 
     const [date, month, year] = row.Date.split("/")
@@ -29,7 +29,7 @@ const validateImport = (source, id) => {
     const dateParsed = new Date(Date.parse(isoStr))
 
     if (!(dateParsed instanceof Date) || dateParsed.toISOString() !== isoStr) {
-      console.log(errMsg)
+      console.log(err)
     }
 
     let record = {
@@ -39,13 +39,13 @@ const validateImport = (source, id) => {
       date: isoStr,
     }
 
-    totalAmount += record.amount
+    total += record.amount
     data.push(record)
   })
 
   return {
     data,
-    totalAmount,
+    total,
   }
 }
 
