@@ -3,6 +3,10 @@ const asyncHandler = require("express-async-handler")
 const User = require("../models/userModel")
 const crypto = require("crypto")
 const validator = require("validator")
+const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv');
+dotenv.config();
+
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -59,14 +63,19 @@ const registerUser = asyncHandler(async (req, res) => {
   })
 
   // Send user info and token
-  if (user) {
-    res.status(201).json({
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-      accessToken: generateToken(user._id),
-    })
-  }
+  const token = jwt.sign(
+    { user_id: user._id, email },
+    process.env.JWT_KEY,
+    {
+      expiresIn: "2h",
+    }
+  );
+  // save user token
+  user.token = token;
+
+  // return new user
+  res.status(201).json(user);
+
 })
 
 // @desc    Authenticate a user
