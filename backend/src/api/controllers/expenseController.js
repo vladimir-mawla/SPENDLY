@@ -13,3 +13,17 @@ const getExpenses = asyncHandler(async (req, res) => {
 
   res.status(200).json(expenses)
 })
+
+// @desc    Set expense
+// @route   POST /api/expenses
+// @access  Private
+const setExpense = asyncHandler(async (req, res) => {
+  const expense = await Expense.create({
+    user: req.user.id,
+    type: req.body.type,
+    amount: req.body.amount,
+    date: req.body.date,
+  })
+
+  res.status(200).json(expense)
+})
