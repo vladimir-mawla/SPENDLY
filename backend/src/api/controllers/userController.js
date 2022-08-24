@@ -134,12 +134,6 @@ const updateUser = asyncHandler(async (req, res) => {
     first_name,
     last_name,
     email,
-    websiteAddress,
-    country,
-    city,
-    phone,
-    about,
-    settings,
   } = req.body
 
   // check email
@@ -155,140 +149,11 @@ const updateUser = asyncHandler(async (req, res) => {
   user.first_name = first_name ? first_name : user.first_name
   user.last_name = last_name ? last_name : user.last_name
   user.email = email ? email : user.email
-  user.websiteAddress = websiteAddress
-  user.country = country
-  user.city = city
-  user.phone = phone
-  user.about = about
-  user.settings = settings ? settings : user.settings
 
   const updatedUser = await user.save()
 
   res.status(200).json(updatedUser)
   log(req, res, updatedUser)
-})
-
-// @desc    Reset a user password
-// @route   POST /api/users/reset
-// @access  Private
-const resetPassword = asyncHandler(async (req, res) => {
-  const { userId, token, password } = req.body
-
-  if (!userId || !token || !password) {
-    res.status(400)
-    throw new Error("Please add all fields")
-  }
-
-  // Check token
-  let passwordResetToken = await Token.findOne({ userId })
-  if (!passwordResetToken) {
-    res.status(400)
-    throw new Error("Invalid or expired password reset token")
-  }
-
-  const isValid = await bcrypt.compare(token, passwordResetToken.token)
-  if (!isValid) {
-    res.status(400)
-    throw new Error("Invalid or expired password reset token")
-  }
-
-  // Validate password
-  if (
-    !validator.isStrongPassword(password, [
-      {
-        minLength: 8,
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-        returnScore: false,
-      },
-    ])
-  ) {
-    res.status(400)
-    throw new Error("Password is not valid")
-  }
-
-  // Hash password
-  const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(password, salt)
-
-  // Check for user and update
-  const user = await User.findById({ _id: userId })
-  if (!user) {
-    res.status(400)
-    throw new Error("User not found")
-  }
-
-  user.password = hashedPassword
-  user.save()
-
-  // Send success email
-  const userName = `${user.first_name} ${user.last_name}`
-  const link = `${process.env.CLIENT_URL}/login`
-  sendEmail(
-    user.email,
-    "Password reset successfully",
-    {
-      name: userName,
-      link: link,
-    },
-    "src/api/helpers/templates/resetDone.handlebars"
-  )
-
-  await passwordResetToken.deleteOne()
-
-  res.status(201).json({ message: "Password reset successfully" })
-  log(req, res, user)
-})
-
-// @desc    Request a reset user password
-// @route   POST /api/users/request.reset
-// @access  Public
-const requestResetPassword = asyncHandler(async (req, res) => {
-  const { email } = req.body
-
-  if (!email) {
-    res.status(400)
-    throw new Error("Please add your email")
-  }
-
-  // Check for user email
-  const user = await User.findOne({ email })
-  if (!user) {
-    res.status(400)
-    throw new Error("User not found")
-  }
-
-  // check for token and delete if exists
-  let token = await Token.findOne({ userId: user._id })
-  if (token) {
-    await token.deleteOne()
-  }
-
-  // create new token
-  const resetToken = crypto.randomBytes(32).toString("hex")
-  const salt = await bcrypt.genSalt(10)
-  const hash = await bcrypt.hash(resetToken, salt)
-
-  // save token
-  await new Token({
-    userId: user._id,
-    token: hash,
-    createdAt: Date.now(),
-  }).save()
-
-  // send email with the reset link
-  const link = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`
-  const userName = `${user.first_name} ${user.last_name}`
-  sendEmail(
-    user.email,
-    "Password Reset Request",
-    { name: userName, link: link },
-    "src/api/helpers/templates/resetPassword.handlebars"
-  )
-
-  res.status(200).json({ message: "Email Sent" })
 })
 
 // @desc    Get user data
