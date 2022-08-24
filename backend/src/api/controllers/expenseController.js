@@ -99,3 +99,34 @@ const importExpense = asyncHandler(async (req, res) => {
 
   res.status(200).json({ file: req.file, expenses: imports })
 })
+
+// @desc    Export expense CSV
+// @route   GET /api/expenses/export
+// @access  Private
+const exportExpense = asyncHandler(async (req, res) => {
+  const expenses = await Expense.find({ user: req.user.id })
+
+  // fields to export in csv
+  const fields = ["type", "amount", "date", "createdAt", "updatedAt"]
+
+  // create csv
+  let csv = await json2csv(expenses, { fields })
+
+  // save csv to static folder
+  const filename = `income-${Date.now()}.csv`
+
+  if (req.user.settings.emailExports) {
+    const userName = `${req.user.firstName} ${req.user.lastName}`
+  }
+
+  res.status(200).attachment(filename).send(csv)
+})
+
+module.exports = {
+  getExpenses,
+  setExpense,
+  updateExpense,
+  deleteExpense,
+  importExpense,
+  exportExpense,
+}
