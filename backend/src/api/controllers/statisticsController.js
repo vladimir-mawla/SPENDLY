@@ -76,3 +76,8 @@ const getPublicUserInfo = asyncHandler(async (req, res) => {
 
   res.status(200).json(user)
 })
+
+module.exports = {
+  getUserStats,
+  getPublicUserInfo
+}
