@@ -39,3 +39,40 @@ const getUserStats = asyncHandler(async (req, res) => {
   res.status(200).json(resData)
 })
 
+// @desc    Get public user's info
+// @route   GET /api/stats/:id
+// @access  Public
+const getPublicUserInfo = asyncHandler(async (req, res) => {
+
+  let id = req.params.id
+
+  const user = await User.findOne(
+    { _id: id },
+    {
+      _id: 1,
+      orgName: 1,
+      country: 1,
+      city: 1,
+      websiteAddress: 1,
+      phone: 1,
+      about: 1,
+      totalIncome: 1,
+      totalExpenses: 1,
+      logoURL: 1,
+      createdAt: 1,
+      'settings.publicVisibility': 1,
+    }
+  )
+
+  if(!user) {
+    res.status(400)
+    throw new Error("User not found")
+  }
+
+  if(!user.settings.publicVisibility) {
+    res.status(400)
+    throw new Error("User is not publicly available")
+  }
+
+  res.status(200).json(user)
+})
