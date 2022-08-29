@@ -41,3 +41,29 @@ const setDocument = asyncHandler(async (req, res) => {
   log(req, res, doc)
 })
 
+// @desc    Update document
+// @route   PUT /api/documents
+// @access  Private
+const updateDocument = asyncHandler(async (req, res) => {
+  const doc = await Document.findById(req.body.id)
+  const link = req.file.location
+
+  if (!doc) {
+    res.status(400)
+    throw new Error("Document not found")
+  }
+
+  if (!link) {
+    res.status(400)
+    throw new Error("Please Try Again")
+  }
+
+  doc.notes = req.body.notes
+  doc.date = req.body.date
+  doc.document = link
+
+  const updatedDoc = await doc.save()
+
+  res.status(200).json(updatedDoc)
+  log(req, res, updatedDoc)
+})
