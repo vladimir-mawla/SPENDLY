@@ -67,3 +67,26 @@ const updateDocument = asyncHandler(async (req, res) => {
   res.status(200).json(updatedDoc)
   log(req, res, updatedDoc)
 })
+
+// @desc    Delete document
+// @route   DELETE /api/documents/:id
+// @access  Private
+const deleteDocument = asyncHandler(async (req, res) => {
+  const doc = await Document.findById(req.params.id)
+
+  if (!doc) {
+    res.status(400)
+    throw new Error("Document not found")
+  }
+
+  await doc.remove()
+
+  res.status(200).json({ id: req.params.id })
+})
+
+module.exports = {
+  getDocuments,
+  setDocument,
+  updateDocument,
+  deleteDocument,
+}
