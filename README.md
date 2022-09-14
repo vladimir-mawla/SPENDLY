@@ -12,7 +12,7 @@
 
 <img src="./readme/title2.svg" id="project-philosophy"/>
 
-> NET is a website where users can track their income flow of donations and expenses, save the relative documents, and access their overall statistics
+> SPENDLY is a website where users can track their income flow of donations and expenses, save the relative documents, and access their overall statistics
 
 ### User Stories
 
@@ -33,7 +33,7 @@
 
 <img src="./readme/title4.svg" id="tech-stack"/>
 
-Here's a brief high-level overview of the tech stack NET uses:
+Here's a brief high-level overview of the tech stack SPENDLY uses:
 
 - The design of the app adheres to the material design guidelines.
 - This project uses the [React](https://reactjs.org/) library. React is a open-source front-end JavaScript library for building user interfaces based on UI components.
@@ -118,21 +118,4 @@ npm install npm@latest -g
 5. Run the frontend
    ```sh
    npm run start
-   ```
-
-### To Run with Docker
-
-1. Download Docker and Docker Compose, _if you are running on windows it is recommended to install Docker Desktop_
-
-2. Enter your configurations in `./backend/.env.production` for example:
-
-   ```
-   PORT=5000
-   MONGO_URI=mongodb://root:Pass01@mongodb:27017/expense-tracker-db?authSource=admin
-   ```
-
-3. Build and run the containers
-
-   ```sh
-   docker compose up
    ```
