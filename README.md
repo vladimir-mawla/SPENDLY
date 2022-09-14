@@ -94,7 +94,7 @@ npm install npm@latest -g
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/Hassan-Zbib/expense-tracker.git
+   git clone https://github.com/vladimir-mawla/SPENDLY.git
    ```
 2. Install NPM packages
    ```sh
