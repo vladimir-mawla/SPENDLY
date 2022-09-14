@@ -12,7 +12,7 @@ const {
 } = require("../../controllers/userController")
 
 const { protect } = require("../../middlewares/authMiddleware")
-// const { upload } = require("../../middlewares/multerS3Middleware")
+const { upload } = require("../../middlewares/multerS3Middleware")
 
 // Routes on /api/users/
 router
@@ -24,6 +24,6 @@ router
 router.post("/login", loginUser)
 router.post("/reset", resetPassword)
 router.post("/request.reset", requestResetPassword)
-// router.post("/upload", protect, upload.single("file"), uploadProfilePic)
+router.post("/upload", protect, upload.single("file"), uploadProfilePic)
 
 module.exports = router
