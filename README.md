@@ -40,8 +40,6 @@ Here's a brief high-level overview of the tech stack SPENDLY uses:
 - This project uses the [Express JS](https://expressjs.com/) web framework. Express JS is a web application framework that provides you with an API to build websites, web apps and back ends.
 - For persistent data, the app uses [mongoDB](https://www.mongodb.com/). MongoDB is a document-oriented NoSQL database used for high volume data storage.
 - This project uses the [Mongoose](https://mongoosejs.com/) library. Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node. js. It manages relationships between data, provides schema validation, and many other utilities.
-- For storing user images and transaction documents, this project uses [Amazon S3 Buckets](https://aws.amazon.com/s3/). Amazon S3 is an object storage service that stores data as objects within buckets.
-- For backend shipping and deployment, this project uses [Docker](https://www.docker.com/). Docker is an open platform to develop, ship and run applications containers on a common operating system.
 
 <br><br>
 <img src="./readme/title5.svg" id="implementation"/>
