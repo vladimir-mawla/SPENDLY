@@ -57,18 +57,10 @@ Here's a brief high-level overview of the tech stack SPENDLY uses:
    </tr>
    <tr>
     <td>Income Page</td>
-    <td>Expense Documents</td>
+    <td>Discover</td>
    </tr>
    <tr>
     <td><img src="readme/income.gif"/></td>
-    <td><img src="readme/Docs.gif"/></td>
-   </tr>
-   <tr>
-    <td>Profile Page</td>
-    <td>Discover</td>
-   </tr> 
-   <tr>
-    <td><img src="readme/Profile.gif"/></td>
     <td><img src="readme/Discover.gif"/></td>
    </tr>
 </table>
